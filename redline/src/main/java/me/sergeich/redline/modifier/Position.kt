@@ -56,14 +56,7 @@ public fun Modifier.visualizePosition(
                 color = color,
                 textColor = textColor,
                 textSize = textSize,
-                edges = edges,
-                inspectorInfo = debugInspectorInfo {
-                    name = "position"
-                    properties["color"] = color
-                    properties["textColor"] = textColor
-                    properties["textSize"] = textSize
-                    properties["edges"] = edges.joinToString { it.name }
-                },
+                edges = edges
             )
         )
 }
@@ -73,7 +66,6 @@ private class PositionElement(
     private val textColor: Color,
     private val textSize: TextUnit,
     private val edges: Set<Edge>,
-    private val inspectorInfo: InspectorInfo.() -> Unit
 ) : ModifierNodeElement<PositionNode>() {
 
     override fun create(): PositionNode {
@@ -93,7 +85,13 @@ private class PositionElement(
     }
 
     override fun InspectorInfo.inspectableProperties() {
-        inspectorInfo()
+        debugInspectorInfo {
+            name = "position"
+            properties["color"] = color
+            properties["textColor"] = textColor
+            properties["textSize"] = textSize
+            properties["edges"] = edges.joinToString { it.name }
+        }
     }
 
     override fun hashCode(): Int {

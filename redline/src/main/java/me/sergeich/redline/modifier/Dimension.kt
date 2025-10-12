@@ -47,14 +47,7 @@ public fun Modifier.visualizeDimension(
             color = color,
             textColor = textColor,
             textSize = textSize,
-            dimensions = dimensions,
-            inspectorInfo = debugInspectorInfo {
-                name = "dimension"
-                properties["color"] = color
-                properties["textColor"] = textColor
-                properties["textSize"] = textSize
-                properties["dimensions"] = dimensions.joinToString { it.name }
-            },
+            dimensions = dimensions
         )
     )
 }
@@ -73,8 +66,7 @@ private class DimensionElement(
     private val color: Color = Color.Unspecified,
     private val textColor: Color,
     private val textSize: TextUnit,
-    private val dimensions: Set<Dimension>,
-    private val inspectorInfo: InspectorInfo.() -> Unit,
+    private val dimensions: Set<Dimension>
 ) : ModifierNodeElement<DimensionsNode>() {
 
     override fun create(): DimensionsNode {
@@ -94,7 +86,13 @@ private class DimensionElement(
     }
 
     override fun InspectorInfo.inspectableProperties() {
-        inspectorInfo()
+        debugInspectorInfo {
+            name = "dimension"
+            properties["color"] = color
+            properties["textColor"] = textColor
+            properties["textSize"] = textSize
+            properties["dimensions"] = dimensions.joinToString { it.name }
+        }
     }
 
     override fun hashCode(): Int {

@@ -32,18 +32,13 @@ public fun Modifier.visualizeBaseline(
     return this
         .then(
             BaselineElement(
-                color = color,
-                inspectorInfo = debugInspectorInfo {
-                    name = "alignment"
-                    properties["color"] = color
-                },
+                color = color
             )
         )
 }
 
 private class BaselineElement(
-    private val color: Color = Color.Unspecified,
-    private val inspectorInfo: InspectorInfo.() -> Unit
+    private val color: Color = Color.Unspecified
 ) : ModifierNodeElement<BaselineNode>() {
 
     override fun create(): BaselineNode {
@@ -55,7 +50,10 @@ private class BaselineElement(
     }
 
     override fun InspectorInfo.inspectableProperties() {
-        inspectorInfo()
+        debugInspectorInfo {
+            name = "alignment"
+            properties["color"] = color
+        }
     }
 
     override fun hashCode(): Int {
