@@ -1,6 +1,5 @@
 package me.sergeich.redline.components
 
-import android.graphics.PointF
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,6 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
@@ -23,8 +23,8 @@ import kotlin.math.min
 
 internal fun DrawScope.drawIBeam(
     axis: Axis,
-    start: PointF,
-    end: PointF,
+    start: Offset,
+    end: Offset,
     color: Color,
     style: LineStyle = LineStyle.Default
 ) {
@@ -125,8 +125,8 @@ private fun IBeamPreview() {
                 .drawWithContent {
                     drawIBeam(
                         axis = Axis.Horizontal,
-                        start = PointF(0f, size.height / 2),
-                        end = PointF(size.width, size.height / 2),
+                        start = Offset(0f, size.height / 2),
+                        end = Offset(size.width, size.height / 2),
                         color = Color.Red
                     )
                 })
@@ -138,8 +138,8 @@ private fun IBeamPreview() {
                 .drawWithContent {
                     drawIBeam(
                         axis = Axis.Vertical,
-                        start = PointF(size.width / 2, 0f),
-                        end = PointF(size.width / 2, size.height),
+                        start = Offset(size.width / 2, 0f),
+                        end = Offset(size.width / 2, size.height),
                         color = Color.Red
                     )
                 })

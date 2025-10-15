@@ -1,7 +1,6 @@
 package me.sergeich.redline.modifier
 
 import android.graphics.Paint
-import android.graphics.PointF
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -137,14 +136,14 @@ private class DimensionsNode(
             dimensions.contains(Dimension.Width) -> {
                 drawIBeam(
                     axis = Axis.Horizontal,
-                    start = PointF(0f, size.height / 2),
-                    end = PointF(size.width, size.height / 2),
+                    start = Offset(0f, size.height / 2),
+                    end = Offset(size.width, size.height / 2),
                     color = color
                 )
                 val text = size.width.format()
                 drawDimensionLabel(text = text,
                     color = color,
-                    markPoint = PointF(size.width / 2, size.height / 2),
+                    markPoint = Offset(size.width / 2, size.height / 2),
                     edge = Edge.Top,
                     textPaint = textPaint)
             }
@@ -153,14 +152,14 @@ private class DimensionsNode(
                 Offset(size.width / 2, 0f)
                 drawIBeam(
                     axis = Axis.Vertical,
-                    start = PointF(size.width / 2, 0f),
-                    end = PointF(size.width / 2, size.height),
+                    start = Offset(size.width / 2, 0f),
+                    end = Offset(size.width / 2, size.height),
                     color = color
                 )
                 val text = size.height.format()
                 drawDimensionLabel(text = text,
                     color = color,
-                    markPoint = PointF(size.width / 2, size.height / 2),
+                    markPoint = Offset(size.width / 2, size.height / 2),
                     edge = Edge.Leading,
                     textPaint = textPaint)
             }
@@ -176,7 +175,7 @@ private class DimensionsNode(
         val text = "${size.width.format()}×${size.height.format()}"
         drawDimensionLabel(text = text,
             color = color,
-            markPoint = PointF(size.width, 0f),
+            markPoint = Offset(size.width, 0f),
             textPaint = textPaint)
     }
 

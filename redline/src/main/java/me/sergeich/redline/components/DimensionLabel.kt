@@ -1,7 +1,6 @@
 package me.sergeich.redline.components
 
 import android.graphics.Paint
-import android.graphics.PointF
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.graphics.Color
@@ -27,7 +27,7 @@ import me.sergeich.redline.offset
 internal fun DrawScope.drawDimensionLabel(
     text: String,
     color: Color,
-    markPoint: PointF,
+    markPoint: Offset,
     textPaint: Paint,
     edge: Edge? = null
 ) {
@@ -42,10 +42,7 @@ internal fun DrawScope.drawDimensionLabel(
     val triangleWidth = 5f * density
     val triangleHeight = 6f * density
 
-    val coords = calculateCoords(markPoint, edge, height, width, triangleWidth, markPadding)
-    val x = coords.x
-    val y = coords.y
-
+    val (x, y) = calculateCoords(markPoint, edge, height, width, triangleWidth, markPadding)
     val path = Path()
     val rect = Rect(x, y, x + width, y + height)
 
@@ -75,13 +72,13 @@ internal fun DrawScope.drawDimensionLabel(
 }
 
 private fun calculateCoords(
-    markPoint: PointF,
+    markPoint: Offset,
     edge: Edge?,
     height: Float,
     width: Float,
     triangleWidth: Float,
     markPadding: Float
-): PointF {
+): Offset {
     var x = markPoint.x
     var y = markPoint.y
     when (edge) {
@@ -109,7 +106,7 @@ private fun calculateCoords(
             x -= width
         }
     }
-    return PointF(x, y)
+    return Offset(x, y)
 }
 
 private fun constructTriangleMark(
@@ -179,7 +176,7 @@ private fun DimensionLabelPreview() {
                     drawDimensionLabel(
                         "test Test",
                         color = Color.Red,
-                        markPoint = PointF(size.width, 0f),
+                        markPoint = Offset(size.width, 0f),
                         textPaint
                     )
                 })
@@ -194,7 +191,7 @@ private fun DimensionLabelPreview() {
                         "test Test",
                         color = Color.Red,
                         edge = Edge.Trailing,
-                        markPoint = PointF(size.width, size.height / 2),
+                        markPoint = Offset(size.width, size.height / 2),
                         textPaint = textPaint
                     )
                 })
@@ -209,7 +206,7 @@ private fun DimensionLabelPreview() {
                         text = "342 px",
                         color = Color.Red,
                         edge = Edge.Top,
-                        markPoint = PointF(size.width / 2, 0f),
+                        markPoint = Offset(size.width / 2, 0f),
                         textPaint = textPaint
                     )
                 })
@@ -223,7 +220,7 @@ private fun DimensionLabelPreview() {
                         text = "342 px",
                         color = Color.Red,
                         edge = Edge.Leading,
-                        markPoint = PointF(0f, size.height / 2),
+                        markPoint = Offset(0f, size.height / 2),
                         textPaint = textPaint
                     )
                 })
@@ -237,7 +234,7 @@ private fun DimensionLabelPreview() {
                         text = "342 px",
                         color = Color.Red,
                         edge = Edge.Bottom,
-                        markPoint = PointF(size.width / 2, size.height),
+                        markPoint = Offset(size.width / 2, size.height),
                         textPaint = textPaint
                     )
                 })

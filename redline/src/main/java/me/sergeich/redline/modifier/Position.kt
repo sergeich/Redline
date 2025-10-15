@@ -1,7 +1,6 @@
 package me.sergeich.redline.modifier
 
 import android.graphics.Paint
-import android.graphics.PointF
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
@@ -134,14 +134,14 @@ private class PositionNode(
             if (edges.contains(Edge.Leading)) {
                 drawIBeam(
                     Axis.Horizontal,
-                    start = PointF(0f, size.height / 2f),
-                    end = PointF(-r.left, size.height / 2f),
+                    start = Offset(0f, size.height / 2f),
+                    end = Offset(-r.left, size.height / 2f),
                     color = color
                 )
                 drawDimensionLabel(
                     r.left.format(),
                     color = color,
-                    markPoint = PointF(-r.left / 2f, size.height / 2f),
+                    markPoint = Offset(-r.left / 2f, size.height / 2f),
                     edge = Edge.Top,
                     textPaint = textPaint
                 )
@@ -149,14 +149,14 @@ private class PositionNode(
             if (edges.contains(Edge.Trailing)) {
                 drawIBeam(
                     Axis.Horizontal,
-                    start = PointF(size.width, size.height / 2f),
-                    end = PointF(size.width + r.right, size.height / 2f),
+                    start = Offset(size.width, size.height / 2f),
+                    end = Offset(size.width + r.right, size.height / 2f),
                     color = color
                 )
                 drawDimensionLabel(
                     r.right.format(),
                     color = color,
-                    markPoint = PointF(size.width + r.left / 2f, size.height / 2f),
+                    markPoint = Offset(size.width + r.right / 2f, size.height / 2f),
                     edge = Edge.Top,
                     textPaint = textPaint
                 )
@@ -164,14 +164,14 @@ private class PositionNode(
             if (edges.contains(Edge.Top)) {
                 drawIBeam(
                     Axis.Vertical,
-                    start = PointF(size.width / 2f, 0f),
-                    end = PointF(size.width / 2f, -r.top),
+                    start = Offset(size.width / 2f, 0f),
+                    end = Offset(size.width / 2f, -r.top),
                     color = color
                 )
                 drawDimensionLabel(
                     r.top.format(),
                     color = color,
-                    markPoint = PointF(size.width / 2f, -r.top / 2f),
+                    markPoint = Offset(size.width / 2f, -r.top / 2f),
                     edge = Edge.Leading,
                     textPaint = textPaint
                 )
@@ -179,14 +179,14 @@ private class PositionNode(
             if (edges.contains(Edge.Bottom)) {
                 drawIBeam(
                     Axis.Vertical,
-                    start = PointF(size.width / 2f, size.height),
-                    end = PointF(size.width / 2f, size.height + r.bottom),
+                    start = Offset(size.width / 2f, size.height),
+                    end = Offset(size.width / 2f, size.height + r.bottom),
                     color = color
                 )
                 drawDimensionLabel(
                     r.bottom.format(),
                     color = color,
-                    markPoint = PointF(size.width / 2f, size.height + r.bottom / 2f),
+                    markPoint = Offset(size.width / 2f, size.height + r.bottom / 2f),
                     edge = Edge.Leading,
                     textPaint = textPaint
                 )
