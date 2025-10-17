@@ -7,26 +7,30 @@ import java.util.Locale
 /**
  * Represents different edges for position visualization
  */
-enum class Edge {
+public enum class Edge {
     Top, Leading, Trailing, Bottom
 }
 
 /**
  * Represents different dimensions for visualization
  */
-enum class Dimension {
+public enum class Dimension {
     Width, Height
 }
 
 /**
  * Represents different axes for spacing visualization
  */
-enum class Axis {
+public enum class Axis {
     Horizontal, Vertical
 }
 
-enum class LineStyle {
+public enum class LineStyle {
     Default, Dashed, Dotted
+}
+
+public enum class SizeUnit {
+    Dp, Px
 }
 
 /**
@@ -66,6 +70,10 @@ internal operator fun Rect.get(unitPoint: UnitPoint): Offset {
     )
 }
 
-internal fun Float.format(): String {
-    return String.format(Locale.ROOT, "%.0f", this)
+internal fun Float.format(sizeUnit: SizeUnit, density: Float): String {
+    val value = when (sizeUnit) {
+        SizeUnit.Dp -> this / density
+        SizeUnit.Px -> this
+    }
+    return String.format(Locale.ROOT, "%.0f", value)
 }

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -112,7 +113,8 @@ fun RedlineExample(modifier: Modifier) {
                 Text(
                     text = "Width Only",
                     fontSize = 12.sp,
-                    color = Color.Black
+                    color = Color.Black,
+                    modifier = Modifier.offset(y = (-16).dp)
                 )
             }
         }
@@ -137,7 +139,8 @@ fun RedlineExample(modifier: Modifier) {
                 Text(
                     text = "Height Only",
                     fontSize = 12.sp,
-                    color = Color.Black
+                    color = Color.Black,
+                    modifier = Modifier.offset(y = (-16).dp)
                 )
             }
         }
@@ -146,13 +149,14 @@ fun RedlineExample(modifier: Modifier) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(120.dp)
+                .height(160.dp)
                 .background(Color.Blue.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
         ) {
             Card(
                 modifier = Modifier
                     .size(80.dp)
                     .align(Alignment.Center)
+                    .offset(x = 42.dp, y = 8.dp)
                     .visualizePosition(
                         edges = setOf(Edge.Top, Edge.Leading, Edge.Trailing, Edge.Bottom)
                     ),

@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import me.sergeich.redline.Axis
 import me.sergeich.redline.Dimension
+import me.sergeich.redline.SizeUnit
 import me.sergeich.redline.components.drawDimensionLabel
 import me.sergeich.redline.components.drawIBeamWithLabel
 import me.sergeich.redline.format
@@ -38,6 +39,7 @@ public fun Modifier.visualizeDimension(
     color: Color = Color.Red,
     textColor: Color = Color.White,
     textSize: TextUnit = 14.sp,
+    sizeUnit: SizeUnit = SizeUnit.Dp,
     dimensions: Set<Dimension> = setOf(Dimension.Width, Dimension.Height)
 ): Modifier {
     return this.then(
@@ -45,6 +47,7 @@ public fun Modifier.visualizeDimension(
             color = color,
             textColor = textColor,
             textSize = textSize,
+            sizeUnit = sizeUnit,
             dimensions = dimensions
         )
     )
@@ -64,6 +67,7 @@ private class DimensionElement(
     private val color: Color = Color.Unspecified,
     private val textColor: Color,
     private val textSize: TextUnit,
+    private val sizeUnit: SizeUnit,
     private val dimensions: Set<Dimension>
 ) : ModifierNodeElement<DimensionsNode>() {
 
@@ -72,6 +76,7 @@ private class DimensionElement(
             color,
             textColor,
             textSize,
+            sizeUnit,
             dimensions
         )
     }
@@ -80,6 +85,7 @@ private class DimensionElement(
         node.color = color
         node.textColor = textColor
         node.textSize = textSize
+        node.sizeUnit = sizeUnit
         node.dimensions = dimensions
     }
 
@@ -89,6 +95,7 @@ private class DimensionElement(
             properties["color"] = color
             properties["textColor"] = textColor
             properties["textSize"] = textSize
+            properties["sizeUnit"] = sizeUnit
             properties["dimensions"] = dimensions.joinToString { it.name }
         }
     }
@@ -97,6 +104,7 @@ private class DimensionElement(
         var result = color.hashCode()
         result = 31 * result + textColor.hashCode()
         result = 31 * result + textSize.hashCode()
+        result = 31 * result + sizeUnit.hashCode()
         result = 31 * result + dimensions.hashCode()
         return result
     }
@@ -106,6 +114,7 @@ private class DimensionElement(
         return color == otherModifier.color &&
                 textColor == otherModifier.textColor &&
                 textSize == otherModifier.textSize &&
+                sizeUnit == otherModifier.sizeUnit &&
                 dimensions == otherModifier.dimensions
     }
 }
@@ -114,6 +123,7 @@ private class DimensionsNode(
     var color: Color,
     var textColor: Color,
     var textSize: TextUnit,
+    var sizeUnit: SizeUnit,
     var dimensions: Set<Dimension>
 ) : DrawModifierNode, Modifier.Node() {
 
@@ -133,7 +143,7 @@ private class DimensionsNode(
             }
 
             dimensions.contains(Dimension.Width) -> {
-                val text = size.width.format()
+                val text = size.width.format(sizeUnit, density)
                 drawIBeamWithLabel(
                     text = text,
                     textPaint = textPaint,
@@ -145,7 +155,7 @@ private class DimensionsNode(
             }
 
             dimensions.contains(Dimension.Height) -> {
-                val text = size.height.format()
+                val text = size.height.format(sizeUnit, density)
                 drawIBeamWithLabel(
                     text = text,
                     textPaint = textPaint,
@@ -164,7 +174,7 @@ private class DimensionsNode(
             style = Stroke(width = strokeWidthDp.toPx())
         )
         // Draw width label in the corner
-        val text = "${size.width.format()}×${size.height.format()}"
+        val text = "${size.width.format(sizeUnit, density)}×${size.height.format(sizeUnit, density)}"
         drawDimensionLabel(
             text = text,
             color = color,

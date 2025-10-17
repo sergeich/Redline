@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import me.sergeich.redline.Axis
+import me.sergeich.redline.SizeUnit
 import me.sergeich.redline.components.drawIBeamWithLabel
 import me.sergeich.redline.format
 
@@ -46,6 +47,7 @@ fun Modifier.visualizeSpacing(
     color: Color = Color.Red,
     textColor: Color = Color.White,
     textSize: TextUnit = 14.sp,
+    sizeUnit: SizeUnit = SizeUnit.Dp,
     axis: Axis = Axis.Horizontal
 ): Modifier {
     return this
@@ -54,6 +56,7 @@ fun Modifier.visualizeSpacing(
                 color = color,
                 textColor = textColor,
                 textSize = textSize,
+                sizeUnit = sizeUnit,
                 axis = axis
             )
         )
@@ -103,6 +106,7 @@ private class SpacingElement(
     private val color: Color = Color.Red,
     private val textColor: Color = Color.White,
     private val textSize: TextUnit = 14.sp,
+    private val sizeUnit: SizeUnit = SizeUnit.Dp,
     private val axis: Axis
 ) : ModifierNodeElement<SpacingNode>() {
 
@@ -111,6 +115,7 @@ private class SpacingElement(
             color,
             textColor,
             textSize,
+            sizeUnit = sizeUnit,
             axis
         )
     }
@@ -119,6 +124,7 @@ private class SpacingElement(
         node.color = color
         node.textColor = textColor
         node.textSize = textSize
+        node.sizeUnit = sizeUnit
         node.axis = axis
     }
 
@@ -128,6 +134,7 @@ private class SpacingElement(
             properties["color"] = color
             properties["textColor"] = textColor
             properties["textSize"] = textSize
+            properties["sizeUnit"] = sizeUnit
             properties["axis"] = axis.toString()
         }
     }
@@ -136,6 +143,7 @@ private class SpacingElement(
         var result = color.hashCode()
         result = 31 * result + textColor.hashCode()
         result = 31 * result + textSize.hashCode()
+        result = 31 * result + sizeUnit.hashCode()
         result = 31 * result + axis.hashCode()
         return result
     }
@@ -145,6 +153,7 @@ private class SpacingElement(
         return color == otherModifier.color &&
                 textColor == otherModifier.textColor &&
                 textSize == otherModifier.textSize &&
+                sizeUnit == otherModifier.sizeUnit &&
                 axis == otherModifier.axis
     }
 }
@@ -164,13 +173,13 @@ private class SpacingNode(
     var color: Color,
     var textColor: Color,
     var textSize: TextUnit,
+    var sizeUnit: SizeUnit,
     var axis: Axis
 ) : Modifier.Node(), DrawModifierNode, LayoutAwareModifierNode {
 
     private var spacings: List<Spacing> = emptyList()
     private val textPaint = Paint().apply {
         isAntiAlias = true
-        color = Color.White.toArgb()
     }
 
     override fun ContentDrawScope.draw() {
@@ -181,7 +190,7 @@ private class SpacingNode(
 
         spacings.forEach {
             drawIBeamWithLabel(
-                text = it.size.format(),
+                text = it.size.format(sizeUnit, density),
                 textPaint = textPaint,
                 axis = axis,
                 start = it.start,

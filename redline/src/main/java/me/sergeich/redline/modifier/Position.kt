@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import me.sergeich.redline.Axis
 import me.sergeich.redline.Edge
+import me.sergeich.redline.SizeUnit
 import me.sergeich.redline.components.drawIBeamWithLabel
 import me.sergeich.redline.format
 
@@ -47,6 +48,7 @@ public fun Modifier.visualizePosition(
     color: Color = Color.Red,
     textColor: Color = Color.White,
     textSize: TextUnit = 14.sp,
+    sizeUnit: SizeUnit = SizeUnit.Dp,
     edges: Set<Edge> = setOf(Edge.Top, Edge.Leading, Edge.Bottom, Edge.Trailing),
 ): Modifier {
     return this
@@ -55,6 +57,7 @@ public fun Modifier.visualizePosition(
                 color = color,
                 textColor = textColor,
                 textSize = textSize,
+                sizeUnit = sizeUnit,
                 edges = edges
             )
         )
@@ -64,6 +67,7 @@ private class PositionElement(
     private val color: Color = Color.Unspecified,
     private val textColor: Color,
     private val textSize: TextUnit,
+    private val sizeUnit: SizeUnit,
     private val edges: Set<Edge>,
 ) : ModifierNodeElement<PositionNode>() {
 
@@ -72,6 +76,7 @@ private class PositionElement(
             color,
             textColor,
             textSize,
+            sizeUnit,
             edges
         )
     }
@@ -80,6 +85,7 @@ private class PositionElement(
         node.color = color
         node.textColor = textColor
         node.textSize = textSize
+        node.sizeUnit = sizeUnit
         node.edges = edges
     }
 
@@ -89,6 +95,7 @@ private class PositionElement(
             properties["color"] = color
             properties["textColor"] = textColor
             properties["textSize"] = textSize
+            properties["sizeUnit"] = sizeUnit
             properties["edges"] = edges.joinToString { it.name }
         }
     }
@@ -97,6 +104,7 @@ private class PositionElement(
         var result = color.hashCode()
         result = 31 * result + textColor.hashCode()
         result = 31 * result + textSize.hashCode()
+        result = 31 * result + sizeUnit.hashCode()
         result = 31 * result + edges.hashCode()
         return result
     }
@@ -106,6 +114,7 @@ private class PositionElement(
         return color == otherModifier.color &&
                 textColor == otherModifier.textColor &&
                 textSize == otherModifier.textSize &&
+                sizeUnit == otherModifier.sizeUnit &&
                 edges == otherModifier.edges
     }
 }
@@ -114,6 +123,7 @@ private class PositionNode(
     var color: Color,
     var textColor: Color,
     var textSize: TextUnit,
+    var sizeUnit: SizeUnit,
     var edges: Set<Edge>
 ) : DrawModifierNode, Modifier.Node(), LayoutAwareModifierNode {
 
@@ -132,7 +142,7 @@ private class PositionNode(
         if (r != null) {
             if (edges.contains(Edge.Leading)) {
                 drawIBeamWithLabel(
-                    text = r.left.format(),
+                    text = r.left.format(sizeUnit, density),
                     textPaint = textPaint,
                     axis = Axis.Horizontal,
                     start = Offset(0f, size.height / 2f),
@@ -142,7 +152,7 @@ private class PositionNode(
             }
             if (edges.contains(Edge.Trailing)) {
                 drawIBeamWithLabel(
-                    text = r.right.format(),
+                    text = r.right.format(sizeUnit, density),
                     textPaint = textPaint,
                     axis = Axis.Horizontal,
                     start = Offset(size.width, size.height / 2f),
@@ -152,7 +162,7 @@ private class PositionNode(
             }
             if (edges.contains(Edge.Top)) {
                 drawIBeamWithLabel(
-                    text = r.top.format(),
+                    text = r.top.format(sizeUnit, density),
                     textPaint = textPaint,
                     axis = Axis.Vertical,
                     start = Offset(size.width / 2f, 0f),
@@ -162,7 +172,7 @@ private class PositionNode(
             }
             if (edges.contains(Edge.Bottom)) {
                 drawIBeamWithLabel(
-                    text = r.bottom.format(),
+                    text = r.bottom.format(sizeUnit, density),
                     textPaint = textPaint,
                     axis = Axis.Vertical,
                     start = Offset(size.width / 2f, size.height),
