@@ -35,6 +35,7 @@ import me.sergeich.redline.Axis
 import me.sergeich.redline.Edge
 import me.sergeich.redline.components.drawDimensionLabel
 import me.sergeich.redline.components.drawIBeam
+import me.sergeich.redline.components.drawIBeamWithLabel
 import me.sergeich.redline.format
 
 /**
@@ -132,63 +133,43 @@ private class PositionNode(
         val r = distances
         if (r != null) {
             if (edges.contains(Edge.Leading)) {
-                drawIBeam(
-                    Axis.Horizontal,
+                drawIBeamWithLabel(
+                    text = r.left.format(),
+                    textPaint = textPaint,
+                    axis = Axis.Horizontal,
                     start = Offset(0f, size.height / 2f),
                     end = Offset(-r.left, size.height / 2f),
                     color = color
                 )
-                drawDimensionLabel(
-                    r.left.format(),
-                    color = color,
-                    markPoint = Offset(-r.left / 2f, size.height / 2f),
-                    edge = Edge.Top,
-                    textPaint = textPaint
-                )
             }
             if (edges.contains(Edge.Trailing)) {
-                drawIBeam(
-                    Axis.Horizontal,
+                drawIBeamWithLabel(
+                    text = r.right.format(),
+                    textPaint = textPaint,
+                    axis = Axis.Horizontal,
                     start = Offset(size.width, size.height / 2f),
                     end = Offset(size.width + r.right, size.height / 2f),
                     color = color
                 )
-                drawDimensionLabel(
-                    r.right.format(),
-                    color = color,
-                    markPoint = Offset(size.width + r.right / 2f, size.height / 2f),
-                    edge = Edge.Top,
-                    textPaint = textPaint
-                )
             }
             if (edges.contains(Edge.Top)) {
-                drawIBeam(
-                    Axis.Vertical,
+                drawIBeamWithLabel(
+                    text = r.top.format(),
+                    textPaint = textPaint,
+                    axis = Axis.Vertical,
                     start = Offset(size.width / 2f, 0f),
                     end = Offset(size.width / 2f, -r.top),
                     color = color
                 )
-                drawDimensionLabel(
-                    r.top.format(),
-                    color = color,
-                    markPoint = Offset(size.width / 2f, -r.top / 2f),
-                    edge = Edge.Leading,
-                    textPaint = textPaint
-                )
             }
             if (edges.contains(Edge.Bottom)) {
-                drawIBeam(
-                    Axis.Vertical,
+                drawIBeamWithLabel(
+                    text = r.bottom.format(),
+                    textPaint = textPaint,
+                    axis = Axis.Vertical,
                     start = Offset(size.width / 2f, size.height),
                     end = Offset(size.width / 2f, size.height + r.bottom),
                     color = color
-                )
-                drawDimensionLabel(
-                    r.bottom.format(),
-                    color = color,
-                    markPoint = Offset(size.width / 2f, size.height + r.bottom / 2f),
-                    edge = Edge.Leading,
-                    textPaint = textPaint
                 )
             }
         }
@@ -215,14 +196,14 @@ private fun PositionPreview() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(120.dp)
+            .height(160.dp)
             .background(Color.Blue.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
     ) {
         Card(
             modifier = Modifier
                 .size(80.dp)
                 .align(Alignment.Center)
-                .offset(x = 22.dp)
+                .offset(x = 22.dp, y = 11.dp)
                 .visualizePosition(
                     edges = setOf(Edge.Top, Edge.Leading, Edge.Trailing, Edge.Bottom)
                 ),

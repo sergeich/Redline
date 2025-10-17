@@ -26,6 +26,7 @@ import me.sergeich.redline.Dimension
 import me.sergeich.redline.Edge
 import me.sergeich.redline.components.drawDimensionLabel
 import me.sergeich.redline.components.drawIBeam
+import me.sergeich.redline.components.drawIBeamWithLabel
 import me.sergeich.redline.format
 
 /**
@@ -134,34 +135,27 @@ private class DimensionsNode(
             }
 
             dimensions.contains(Dimension.Width) -> {
-                drawIBeam(
+                val text = size.width.format()
+                drawIBeamWithLabel(
+                    text = text,
+                    textPaint = textPaint,
                     axis = Axis.Horizontal,
                     start = Offset(0f, size.height / 2),
                     end = Offset(size.width, size.height / 2),
                     color = color
                 )
-                val text = size.width.format()
-                drawDimensionLabel(text = text,
-                    color = color,
-                    markPoint = Offset(size.width / 2, size.height / 2),
-                    edge = Edge.Top,
-                    textPaint = textPaint)
             }
 
             dimensions.contains(Dimension.Height) -> {
-                Offset(size.width / 2, 0f)
-                drawIBeam(
+                val text = size.height.format()
+                drawIBeamWithLabel(
+                    text = text,
+                    textPaint = textPaint,
                     axis = Axis.Vertical,
                     start = Offset(size.width / 2, 0f),
                     end = Offset(size.width / 2, size.height),
                     color = color
                 )
-                val text = size.height.format()
-                drawDimensionLabel(text = text,
-                    color = color,
-                    markPoint = Offset(size.width / 2, size.height / 2),
-                    edge = Edge.Leading,
-                    textPaint = textPaint)
             }
         }
     }
@@ -173,10 +167,12 @@ private class DimensionsNode(
         )
         // Draw width label in the corner
         val text = "${size.width.format()}×${size.height.format()}"
-        drawDimensionLabel(text = text,
+        drawDimensionLabel(
+            text = text,
             color = color,
             markPoint = Offset(size.width, 0f),
-            textPaint = textPaint)
+            textPaint = textPaint
+        )
     }
 
 }
