@@ -5,17 +5,6 @@ import androidx.compose.ui.geometry.Rect
 import java.util.Locale
 
 /**
- * Redline - Easy Redlines for Jetpack Compose
- *
- * With Redline, you can quickly visualize positions, sizes, spacings and alignment guides
- * to verify your implementation against specs or to debug layout problems.
- */
-
-// ============================================================================
-// CORE TYPES
-// ============================================================================
-
-/**
  * Represents different edges for position visualization
  */
 enum class Edge {
@@ -36,9 +25,6 @@ enum class Axis {
     Horizontal, Vertical
 }
 
-/**
- * Redline style for different line styles
- */
 enum class LineStyle {
     Default, Dashed, Dotted
 }
@@ -62,10 +48,6 @@ internal data class UnitPoint(
         val BottomTrailing = UnitPoint(1f, 1f)
     }
 }
-
-// ============================================================================
-// EXTENSION FUNCTIONS
-// ============================================================================
 
 /**
  * Extension function for Offset to add offset values

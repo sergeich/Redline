@@ -1,0 +1,301 @@
+package me.sergeich.redline.modifier
+
+import android.graphics.Paint
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.ContentDrawScope
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.boundsInParent
+import androidx.compose.ui.node.DrawModifierNode
+import androidx.compose.ui.node.LayoutAwareModifierNode
+import androidx.compose.ui.node.ModifierNodeElement
+import androidx.compose.ui.node.TraversableNode
+import androidx.compose.ui.node.invalidateDraw
+import androidx.compose.ui.node.traverseChildren
+import androidx.compose.ui.platform.InspectorInfo
+import androidx.compose.ui.platform.debugInspectorInfo
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import me.sergeich.redline.Axis
+import me.sergeich.redline.components.drawIBeamWithLabel
+import me.sergeich.redline.format
+
+@Stable
+fun Modifier.measureSpacing(): Modifier {
+    return this.then(SpacingMarkElement())
+}
+
+@Stable
+fun Modifier.visualizeSpacing(
+    color: Color = Color.Red,
+    textColor: Color = Color.White,
+    textSize: TextUnit = 14.sp,
+    axis: Axis = Axis.Horizontal
+): Modifier {
+    return this
+        .then(
+            SpacingElement(
+                color = color,
+                textColor = textColor,
+                textSize = textSize,
+                axis = axis
+            )
+        )
+}
+
+private class SpacingMarkElement : ModifierNodeElement<SpacingMarkNode>() {
+
+    override fun create(): SpacingMarkNode {
+        return SpacingMarkNode()
+    }
+
+    override fun update(node: SpacingMarkNode) {
+    }
+
+    override fun hashCode(): Int {
+        return 31
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return other is SpacingMarkElement
+    }
+
+    override fun InspectorInfo.inspectableProperties() {
+        debugInspectorInfo {
+            name = "measureSpacing"
+        }
+    }
+}
+
+private class SpacingMarkNode : Modifier.Node(), TraversableNode, LayoutAwareModifierNode {
+
+    var bounds: Rect? = null
+
+    override val traverseKey: String = TRAVERSE_KEY
+
+    override fun onPlaced(coordinates: LayoutCoordinates) {
+        super.onPlaced(coordinates)
+        bounds = coordinates.boundsInParent()
+    }
+
+    companion object {
+        const val TRAVERSE_KEY = "me.sergeich.redline.SPACING_TRAVERSAL_NODE_KEY"
+    }
+}
+
+private class SpacingElement(
+    private val color: Color = Color.Red,
+    private val textColor: Color = Color.White,
+    private val textSize: TextUnit = 14.sp,
+    private val axis: Axis
+) : ModifierNodeElement<SpacingNode>() {
+
+    override fun create(): SpacingNode {
+        return SpacingNode(
+            color,
+            textColor,
+            textSize,
+            axis
+        )
+    }
+
+    override fun update(node: SpacingNode) {
+        node.color = color
+        node.textColor = textColor
+        node.textSize = textSize
+        node.axis = axis
+    }
+
+    override fun InspectorInfo.inspectableProperties() {
+        debugInspectorInfo {
+            name = "spacing"
+            properties["color"] = color
+            properties["textColor"] = textColor
+            properties["textSize"] = textSize
+            properties["axis"] = axis.toString()
+        }
+    }
+
+    override fun hashCode(): Int {
+        var result = color.hashCode()
+        result = 31 * result + textColor.hashCode()
+        result = 31 * result + textSize.hashCode()
+        result = 31 * result + axis.hashCode()
+        return result
+    }
+
+    override fun equals(other: Any?): Boolean {
+        val otherModifier = other as? SpacingElement ?: return false
+        return color == otherModifier.color &&
+                textColor == otherModifier.textColor &&
+                textSize == otherModifier.textSize &&
+                axis == otherModifier.axis
+    }
+}
+
+data class Spacing(
+    val axis: Axis,
+    val start: Offset,
+    val end: Offset
+) {
+    val size = when (axis) {
+        Axis.Horizontal -> end.x - start.x
+        Axis.Vertical -> end.y - start.y
+    }
+}
+
+private class SpacingNode(
+    var color: Color,
+    var textColor: Color,
+    var textSize: TextUnit,
+    var axis: Axis
+) : Modifier.Node(), DrawModifierNode, LayoutAwareModifierNode {
+
+    private var spacings: List<Spacing> = emptyList()
+    private val textPaint = Paint().apply {
+        isAntiAlias = true
+        color = Color.White.toArgb()
+    }
+
+    override fun ContentDrawScope.draw() {
+        drawContent()
+
+        textPaint.color = textColor.toArgb()
+        textPaint.textSize = textSize.toPx()
+
+        spacings.forEach {
+            drawIBeamWithLabel(
+                text = it.size.format(),
+                textPaint = textPaint,
+                axis = axis,
+                start = it.start,
+                end = it.end,
+                color = color
+            )
+        }
+    }
+
+    override fun onPlaced(coordinates: LayoutCoordinates) {
+        super.onPlaced(coordinates)
+        traverseChildrenAndMeasureSize()
+    }
+
+    fun traverseChildrenAndMeasureSize() {
+        val l = mutableListOf<Rect>()
+        traverseChildren(SpacingMarkNode.TRAVERSE_KEY) {
+            if (it is SpacingMarkNode) {
+                it.bounds?.let { bounds -> l.add(bounds) }
+            }
+            true
+        }
+        when (axis) {
+            Axis.Horizontal -> l.sortBy { it.left }
+            Axis.Vertical -> l.sortBy { it.top }
+        }
+        spacings = l.zipWithNext { l, r ->
+            when (axis) {
+                Axis.Horizontal -> Spacing(axis, Offset(l.right, l.height / 2), Offset(r.left, l.height / 2))
+                Axis.Vertical -> Spacing(axis, Offset(l.width / 2, l.bottom), Offset(l.width / 2, r.top))
+            }
+        }
+        invalidateDraw()
+    }
+}
+
+
+@Preview
+@Composable
+private fun SpacingSample() {
+    Column {
+        // Horizontal spacing preview
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .visualizeSpacing(
+                    color = Color.Red,
+                    axis = Axis.Horizontal
+                )
+        ) {
+            Text(
+                "A",
+                modifier = Modifier
+                    .offset(5.dp, 22.dp)
+                    .background(Color.LightGray)
+                    .padding(8.dp)
+                    .measureSpacing()
+            )
+
+            Text(
+                "B",
+                modifier = Modifier
+                    .offset(48.dp)
+                    .background(Color.LightGray)
+                    .padding(8.dp)
+                    .measureSpacing()
+            )
+
+            Text(
+                "C",
+                modifier = Modifier
+                    .offset(80.dp)
+                    .background(Color.LightGray)
+                    .padding(8.dp)
+                    .measureSpacing()
+            )
+        }
+
+        Spacer(modifier = Modifier.height(50.dp))
+
+        // Vertical spacing preview
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .visualizeSpacing(
+                    color = Color.Blue,
+                    axis = Axis.Vertical
+                )
+        ) {
+            Text(
+                "A",
+                modifier = Modifier
+                    .background(Color.LightGray)
+                    .padding(8.dp)
+                    .measureSpacing()
+            )
+
+            Text(
+                "B",
+                modifier = Modifier
+                    .background(Color.LightGray)
+                    .padding(8.dp)
+                    .measureSpacing()
+            )
+
+            Text(
+                "C",
+                modifier = Modifier
+                    .background(Color.LightGray)
+                    .padding(8.dp)
+                    .measureSpacing()
+            )
+        }
+    }
+}
+

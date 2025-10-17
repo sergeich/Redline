@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import me.sergeich.redline.Axis
 import me.sergeich.redline.Dimension
 import me.sergeich.redline.Edge
 import me.sergeich.redline.modifier.measureSpacing
@@ -36,6 +37,7 @@ import me.sergeich.redline.modifier.visualizeBaseline
 import me.sergeich.redline.modifier.visualizeDimension
 import me.sergeich.redline.modifier.visualizePosition
 import me.sergeich.redline.modifier.visualizeSize
+import me.sergeich.redline.modifier.visualizeSpacing
 import org.example.redline.ui.theme.RedlineAndroidTheme
 
 class MainActivity : ComponentActivity() {
@@ -194,9 +196,8 @@ fun RedlineExample(modifier: Modifier) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-//                .visualizeSpacing(color = Color.Red, axis = Axis.Vertical)
-            ,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .visualizeSpacing(color = Color.Red, axis = Axis.Vertical),
+            verticalArrangement = Arrangement.spacedBy(32.dp)
         ) {
             repeat(3) { index ->
                 Card(

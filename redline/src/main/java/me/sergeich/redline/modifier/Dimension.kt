@@ -23,9 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import me.sergeich.redline.Axis
 import me.sergeich.redline.Dimension
-import me.sergeich.redline.Edge
 import me.sergeich.redline.components.drawDimensionLabel
-import me.sergeich.redline.components.drawIBeam
 import me.sergeich.redline.components.drawIBeamWithLabel
 import me.sergeich.redline.format
 
