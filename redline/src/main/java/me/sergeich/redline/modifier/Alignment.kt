@@ -25,6 +25,14 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+/**
+ * Visualizes text baselines with horizontal lines.
+ *
+ * This modifier draws horizontal lines to show the first and last baselines of text content,
+ * which is useful for understanding text alignment and spacing in UI layouts.
+ *
+ * @param color The color to use for drawing the baseline lines. Defaults to [Color.Red].
+ */
 @Stable
 public fun Modifier.visualizeBaseline(
     color: Color = Color.Red

@@ -38,10 +38,17 @@ import me.sergeich.redline.components.drawIBeamWithLabel
 import me.sergeich.redline.format
 
 /**
- * Draws position with a solid [color] over the content.
+ * Visualizes component position relative to its parent with measurement lines and labels.
  *
- * @param color color to paint position with
- * @param edges desired edges to visualize
+ * This modifier draws I-beam style measurement lines extending from the component's edges
+ * to the parent's boundaries, showing the distances from each edge. This is useful for
+ * understanding component positioning and margins within its parent container.
+ *
+ * @param color The color to use for drawing the position lines. Defaults to [Color.Red].
+ * @param textColor The color to use for the position text labels. Defaults to [Color.White].
+ * @param textSize The size of the position text labels. Defaults to 14.sp.
+ * @param sizeUnit The unit system for displaying measurements. Defaults to [SizeUnit.Dp].
+ * @param edges The set of edges to visualize. Defaults to all four edges.
  */
 @Stable
 public fun Modifier.visualizePosition(

@@ -29,10 +29,18 @@ import me.sergeich.redline.components.drawIBeamWithLabel
 import me.sergeich.redline.format
 
 /**
- * Draws dimensions with a solid [color] over the content.
+ * Visualizes component dimensions with measurement lines and labels.
  *
- * @param color color to paint dimensions with
- * @param dimensions desired dimensions to visualize
+ * This modifier draws I-beam style measurement lines with dimension labels to show
+ * the width and/or height of a component. The measurements are displayed in the
+ * specified unit system and can be customized with different colors and text sizes.
+ *
+ * @param color The color to use for drawing the dimension lines. Defaults to [Color.Red].
+ * @param textColor The color to use for the dimension text labels. Defaults to [Color.White].
+ * @param textSize The size of the dimension text labels. Defaults to 14.sp.
+ * @param sizeUnit The unit system for displaying measurements. Defaults to [SizeUnit.Dp].
+ * @param dimensions The set of dimensions to visualize. Defaults to both width and height.
+ *
  */
 @Stable
 public fun Modifier.visualizeDimension(
@@ -54,9 +62,12 @@ public fun Modifier.visualizeDimension(
 }
 
 /**
- * Draws size with a solid [color] over the content.
+ * Visualizes both width and height dimensions with measurement lines and labels.
  *
- * @param color color to paint size with
+ * This is a convenience function that calls [visualizeDimension] with both width and height
+ * dimensions enabled. It provides a simple way to show the complete size of a component.
+ *
+ * @param color The color to use for drawing the dimension lines. Defaults to [Color.Red].
  */
 @Stable
 public fun Modifier.visualizeSize(

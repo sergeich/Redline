@@ -5,32 +5,54 @@ import androidx.compose.ui.geometry.Rect
 import java.util.Locale
 
 /**
- * Represents different edges for position visualization
+ * Represents different edges for position visualization.
+ *
+ * Used to specify which edges of a component should be measured and visualized
+ * when using position-related modifiers.
  */
 public enum class Edge {
     Top, Leading, Trailing, Bottom
 }
 
 /**
- * Represents different dimensions for visualization
+ * Represents different dimensions for visualization.
+ *
+ * Used to specify which dimensions of a component should be measured and visualized
+ * when using dimension-related modifiers.
  */
 public enum class Dimension {
     Width, Height
 }
 
 /**
- * Represents different axes for spacing visualization
+ * Represents different axes for spacing visualization.
+ *
+ * Used to specify the direction in which spacing between components should be measured
+ * and visualized.
  */
 public enum class Axis {
     Horizontal, Vertical
 }
 
+/**
+ * Represents different line styles for visualization elements.
+ *
+ * Used to specify the visual style of lines drawn by various visualization modifiers.
+ */
 public enum class LineStyle {
     Default, Dashed, Dotted
 }
 
+/**
+ * Represents different units for displaying size measurements.
+ *
+ * Used to specify the unit system for displaying measurements in visualization labels.
+ */
 public enum class SizeUnit {
-    Dp, Px
+    /** Density-independent pixels (dp) */
+    Dp,
+    /** Physical pixels (px) */
+    Px
 }
 
 /**

@@ -37,11 +37,33 @@ import me.sergeich.redline.SizeUnit
 import me.sergeich.redline.components.drawIBeamWithLabel
 import me.sergeich.redline.format
 
+/**
+ * Marks a component for spacing measurement.
+ *
+ * This modifier marks a component so that it can be included in spacing calculations
+ * when used with [visualizeSpacing]. Components marked with this modifier will have
+ * their positions measured relative to other marked components in the same parent.
+ */
 @Stable
 fun Modifier.measureSpacing(): Modifier {
     return this.then(SpacingMarkElement())
 }
 
+/**
+ * Visualizes spacing between marked components with measurement lines and labels.
+ *
+ * This modifier measures the spacing between components that have been marked with
+ * [measureSpacing] and draws I-beam style measurement lines with labels showing
+ * the distances. The spacing can be measured along either horizontal or vertical axes.
+ *
+ * @param color The color to use for drawing the spacing lines. Defaults to [Color.Red].
+ * @param textColor The color to use for the spacing text labels. Defaults to [Color.White].
+ * @param textSize The size of the spacing text labels. Defaults to 14.sp.
+ * @param sizeUnit The unit system for displaying measurements. Defaults to [SizeUnit.Dp].
+ * @param axis The axis along which to measure spacing. Defaults to [Axis.Horizontal].
+ *
+ * @sample me.sergeich.redline.modifier.SpacingSample
+ */
 @Stable
 fun Modifier.visualizeSpacing(
     color: Color = Color.Red,
@@ -158,11 +180,23 @@ private class SpacingElement(
     }
 }
 
-data class Spacing(
+/**
+ * Represents a spacing measurement between two points.
+ *
+ * This data class holds information about the spacing between two components,
+ * including the axis along which the measurement was taken and the start and end points.
+ *
+ * @param axis The axis along which the spacing was measured.
+ * @param start The starting point of the spacing measurement.
+ * @param end The ending point of the spacing measurement.
+ * @property size The calculated size of the spacing in pixels.
+ */
+private data class Spacing(
     val axis: Axis,
     val start: Offset,
     val end: Offset
 ) {
+    /** The calculated size of the spacing in pixels. */
     val size = when (axis) {
         Axis.Horizontal -> end.x - start.x
         Axis.Vertical -> end.y - start.y
@@ -307,4 +341,3 @@ private fun SpacingSample() {
         }
     }
 }
-
