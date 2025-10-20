@@ -46,7 +46,7 @@ import me.sergeich.redline.format
  */
 @Stable
 fun Modifier.measureSpacing(): Modifier {
-    return this.then(SpacingMarkElement())
+    return this.then(SpacingMarkElement)
 }
 
 /**
@@ -84,22 +84,11 @@ fun Modifier.visualizeSpacing(
         )
 }
 
-private class SpacingMarkElement : ModifierNodeElement<SpacingMarkNode>() {
+private data object SpacingMarkElement : ModifierNodeElement<SpacingMarkNode>() {
 
-    override fun create(): SpacingMarkNode {
-        return SpacingMarkNode()
-    }
+    override fun create(): SpacingMarkNode = SpacingMarkNode()
 
-    override fun update(node: SpacingMarkNode) {
-    }
-
-    override fun hashCode(): Int {
-        return 31
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return other is SpacingMarkElement
-    }
+    override fun update(node: SpacingMarkNode) {}
 
     override fun InspectorInfo.inspectableProperties() {
         debugInspectorInfo {
@@ -239,7 +228,7 @@ private class SpacingNode(
         traverseChildrenAndMeasureSize()
     }
 
-    fun traverseChildrenAndMeasureSize() {
+    private fun traverseChildrenAndMeasureSize() {
         val l = mutableListOf<Rect>()
         traverseChildren(SpacingMarkNode.TRAVERSE_KEY) {
             if (it is SpacingMarkNode) {
@@ -304,7 +293,7 @@ private fun SpacingSample() {
             )
         }
 
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         // Vertical spacing preview
         Column(
@@ -326,6 +315,7 @@ private fun SpacingSample() {
             Text(
                 "B",
                 modifier = Modifier
+                    .offset(0.dp, 22.dp)
                     .background(Color.LightGray)
                     .padding(8.dp)
                     .measureSpacing()
@@ -334,6 +324,7 @@ private fun SpacingSample() {
             Text(
                 "C",
                 modifier = Modifier
+                    .offset(16.dp, 48.dp)
                     .background(Color.LightGray)
                     .padding(8.dp)
                     .measureSpacing()
