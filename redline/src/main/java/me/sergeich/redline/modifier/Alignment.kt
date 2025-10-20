@@ -1,10 +1,5 @@
 package me.sergeich.redline.modifier
 
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -20,10 +15,8 @@ import androidx.compose.ui.node.LayoutModifierNode
 import androidx.compose.ui.node.ModifierNodeElement
 import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.platform.debugInspectorInfo
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 /**
  * Visualizes text baselines with horizontal lines.
@@ -116,28 +109,5 @@ private class BaselineNode(
         return layout(placeable.width, placeable.height) {
             placeable.place(0, 0)
         }
-    }
-}
-
-@Preview
-@Composable
-private fun BaselineSample() {
-
-    Row {
-        Text(
-            "Lorem Ipsum Dolor\nSecond line\nThird line",
-            fontSize = 20.sp,
-            modifier = Modifier
-                .alignByBaseline()
-                .visualizeBaseline()
-        )
-        Spacer(Modifier.size(48.dp))
-        Text(
-            "Another text",
-            fontSize = 12.sp,
-            modifier = Modifier
-                .alignByBaseline()
-                .visualizeBaseline()
-        )
     }
 }

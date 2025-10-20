@@ -1,19 +1,7 @@
 package me.sergeich.redline.modifier
 
 import android.graphics.Paint
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -27,9 +15,7 @@ import androidx.compose.ui.node.LayoutAwareModifierNode
 import androidx.compose.ui.node.ModifierNodeElement
 import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.platform.debugInspectorInfo
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import me.sergeich.redline.Axis
 import me.sergeich.redline.Edge
@@ -201,41 +187,6 @@ private class PositionNode(
             val right = parentSize.width - childBounds.right
             val bottom = parentSize.height - childBounds.bottom
             this@PositionNode.distances = Rect(left, top, right, bottom)
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun PositionPreview() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(160.dp)
-            .background(Color.Blue.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
-    ) {
-        Card(
-            modifier = Modifier
-                .size(80.dp)
-                .align(Alignment.Center)
-                .offset(x = 22.dp, y = 11.dp)
-                .visualizePosition(
-                    edges = setOf(Edge.Top, Edge.Leading, Edge.Trailing, Edge.Bottom)
-                ),
-            shape = RoundedCornerShape(4.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.White),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "Position",
-                    fontSize = 12.sp,
-                    color = Color.Black
-                )
-            }
         }
     }
 }

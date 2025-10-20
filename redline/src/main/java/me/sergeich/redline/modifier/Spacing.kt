@@ -1,16 +1,6 @@
 package me.sergeich.redline.modifier
 
 import android.graphics.Paint
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -28,9 +18,7 @@ import androidx.compose.ui.node.invalidateDraw
 import androidx.compose.ui.node.traverseChildren
 import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.platform.debugInspectorInfo
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import me.sergeich.redline.Axis
 import me.sergeich.redline.SizeUnit
@@ -229,106 +217,23 @@ private class SpacingNode(
     }
 
     private fun traverseChildrenAndMeasureSize() {
-        val l = mutableListOf<Rect>()
+        val rects = mutableListOf<Rect>()
         traverseChildren(SpacingMarkNode.TRAVERSE_KEY) {
             if (it is SpacingMarkNode) {
-                it.bounds?.let { bounds -> l.add(bounds) }
+                it.bounds?.let { bounds -> rects.add(bounds) }
             }
             true
         }
         when (axis) {
-            Axis.Horizontal -> l.sortBy { it.left }
-            Axis.Vertical -> l.sortBy { it.top }
+            Axis.Horizontal -> rects.sortBy { it.left }
+            Axis.Vertical -> rects.sortBy { it.top }
         }
-        spacings = l.zipWithNext { l, r ->
+        spacings = rects.zipWithNext { l, r ->
             when (axis) {
                 Axis.Horizontal -> Spacing(axis, Offset(l.right, l.height / 2), Offset(r.left, l.height / 2))
                 Axis.Vertical -> Spacing(axis, Offset(l.width / 2, l.bottom), Offset(l.width / 2, r.top))
             }
         }
         invalidateDraw()
-    }
-}
-
-
-@Preview
-@Composable
-private fun SpacingSample() {
-    Column {
-        // Horizontal spacing preview
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .visualizeSpacing(
-                    color = Color.Red,
-                    axis = Axis.Horizontal
-                )
-        ) {
-            Text(
-                "A",
-                modifier = Modifier
-                    .offset(5.dp, 22.dp)
-                    .background(Color.LightGray)
-                    .padding(8.dp)
-                    .measureSpacing()
-            )
-
-            Text(
-                "B",
-                modifier = Modifier
-                    .offset(48.dp)
-                    .background(Color.LightGray)
-                    .padding(8.dp)
-                    .measureSpacing()
-            )
-
-            Text(
-                "C",
-                modifier = Modifier
-                    .offset(80.dp)
-                    .background(Color.LightGray)
-                    .padding(8.dp)
-                    .measureSpacing()
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Vertical spacing preview
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .visualizeSpacing(
-                    color = Color.Blue,
-                    axis = Axis.Vertical
-                )
-        ) {
-            Text(
-                "A",
-                modifier = Modifier
-                    .background(Color.LightGray)
-                    .padding(8.dp)
-                    .measureSpacing()
-            )
-
-            Text(
-                "B",
-                modifier = Modifier
-                    .offset(0.dp, 22.dp)
-                    .background(Color.LightGray)
-                    .padding(8.dp)
-                    .measureSpacing()
-            )
-
-            Text(
-                "C",
-                modifier = Modifier
-                    .offset(16.dp, 48.dp)
-                    .background(Color.LightGray)
-                    .padding(8.dp)
-                    .measureSpacing()
-            )
-        }
     }
 }
