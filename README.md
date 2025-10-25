@@ -1,3 +1,5 @@
+[![Sonatype Central](https://maven-badges.sml.io/sonatype-central/me.sergeich/redline/badge.svg)](https://maven-badges.sml.io/sonatype-central/me.sergeich/redline/)
+
 # Redline for Android
 
 Easy Redlines for Jetpack Compose - Visualize positions, sizes, spacings and alignment guides to verify your implementation against specs or to debug layout problems.
@@ -12,7 +14,10 @@ Easy Redlines for Jetpack Compose - Visualize positions, sizes, spacings and ali
 
 ## Installation
 
-TBD
+The library is published at the coordinates:
+```
+implementation 'me.sergeich:redline:0.0.1'
+```
 
 ## Usage
 
