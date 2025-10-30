@@ -65,7 +65,7 @@ fun RedlineExample(modifier: Modifier) {
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         Text(
-            text = "Redline for Android - Modifier API",
+            text = "Redline Modifier API",
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
             color = Color.Black

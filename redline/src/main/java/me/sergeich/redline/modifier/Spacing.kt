@@ -14,7 +14,6 @@ import androidx.compose.ui.node.DrawModifierNode
 import androidx.compose.ui.node.LayoutAwareModifierNode
 import androidx.compose.ui.node.ModifierNodeElement
 import androidx.compose.ui.node.TraversableNode
-import androidx.compose.ui.node.invalidateDraw
 import androidx.compose.ui.node.traverseChildren
 import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.platform.debugInspectorInfo
@@ -49,8 +48,6 @@ fun Modifier.measureSpacing(): Modifier {
  * @param textSize The size of the spacing text labels. Defaults to 14.sp.
  * @param sizeUnit The unit system for displaying measurements. Defaults to [SizeUnit.Dp].
  * @param axis The axis along which to measure spacing. Defaults to [Axis.Horizontal].
- *
- * @sample me.sergeich.redline.modifier.SpacingSample
  */
 @Stable
 fun Modifier.visualizeSpacing(
@@ -186,9 +183,8 @@ private class SpacingNode(
     var textSize: TextUnit,
     var sizeUnit: SizeUnit,
     var axis: Axis
-) : Modifier.Node(), DrawModifierNode, LayoutAwareModifierNode {
+) : Modifier.Node(), DrawModifierNode {
 
-    private var spacings: List<Spacing> = emptyList()
     private val textPaint = Paint().apply {
         isAntiAlias = true
     }
@@ -199,7 +195,7 @@ private class SpacingNode(
         textPaint.color = textColor.toArgb()
         textPaint.textSize = textSize.toPx()
 
-        spacings.forEach {
+        calculateSpacings().forEach {
             drawIBeamWithLabel(
                 text = it.size.format(sizeUnit, density),
                 textPaint = textPaint,
@@ -211,12 +207,7 @@ private class SpacingNode(
         }
     }
 
-    override fun onPlaced(coordinates: LayoutCoordinates) {
-        super.onPlaced(coordinates)
-        traverseChildrenAndMeasureSize()
-    }
-
-    private fun traverseChildrenAndMeasureSize() {
+    private fun calculateSpacings(): List<Spacing> {
         val rects = mutableListOf<Rect>()
         traverseChildren(SpacingMarkNode.TRAVERSE_KEY) {
             if (it is SpacingMarkNode) {
@@ -224,16 +215,18 @@ private class SpacingNode(
             }
             true
         }
-        when (axis) {
-            Axis.Horizontal -> rects.sortBy { it.left }
-            Axis.Vertical -> rects.sortBy { it.top }
+
+        rects.sortBy {
+            when (axis) {
+                Axis.Horizontal -> it.left
+                Axis.Vertical -> it.top
+            }
         }
-        spacings = rects.zipWithNext { l, r ->
+        return rects.zipWithNext { l, r ->
             when (axis) {
                 Axis.Horizontal -> Spacing(axis, Offset(l.right, l.height / 2), Offset(r.left, l.height / 2))
                 Axis.Vertical -> Spacing(axis, Offset(l.width / 2, l.bottom), Offset(l.width / 2, r.top))
             }
         }
-        invalidateDraw()
     }
 }
