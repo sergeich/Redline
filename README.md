@@ -11,6 +11,7 @@ Easy Redlines for Jetpack Compose - Visualize positions, sizes, spacings and ali
 - **Baseline Visualization**: Visualize text baselines for alignment debugging
 - **Spacing Visualization**: Measure and display spacing between composables
 
+![Sample Screenshot](/app_sample_screenshot.png)
 
 ## Installation
 
