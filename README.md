@@ -17,7 +17,7 @@ Easy Redlines for Jetpack Compose - Visualize positions, sizes, spacings and ali
 
 The library is published at the coordinates:
 ```
-implementation 'me.sergeich:redline:0.0.1'
+implementation 'me.sergeich:redline:0.0.2'
 ```
 
 ## Usage

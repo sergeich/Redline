@@ -52,7 +52,7 @@ dependencies {
 
 mavenPublishing {
 
-    coordinates("me.sergeich", "redline", "0.0.1")
+    coordinates("me.sergeich", "redline", "0.0.2")
 
     pom {
         name.set("Redline")
