@@ -2,7 +2,9 @@
 
 # Redline for Android
 
-Easy Redlines for Jetpack Compose - Visualize positions, sizes, spacings and alignment guides to verify your implementation against specs or to debug layout problems.
+Easy Redlines for Jetpack Compose - Visualize positions, sizes, spacings, and alignment guides to verify your implementation against specs or to debug layout problems.
+
+Inspired by https://github.com/robb/Redline
 
 ## Features
 
