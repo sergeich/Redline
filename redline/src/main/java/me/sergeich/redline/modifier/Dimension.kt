@@ -14,8 +14,8 @@ import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import me.sergeich.redline.Axis
+import me.sergeich.redline.Defaults
 import me.sergeich.redline.Dimension
 import me.sergeich.redline.SizeUnit
 import me.sergeich.redline.components.drawDimensionLabel
@@ -38,10 +38,10 @@ import me.sergeich.redline.format
  */
 @Stable
 public fun Modifier.visualizeDimension(
-    color: Color = Color.Red,
-    textColor: Color = Color.White,
-    textSize: TextUnit = 14.sp,
-    sizeUnit: SizeUnit = SizeUnit.Dp,
+    color: Color = Defaults.color,
+    textColor: Color = Defaults.textColor,
+    textSize: TextUnit = Defaults.textSize,
+    sizeUnit: SizeUnit = Defaults.sizeUnit,
     dimensions: Set<Dimension> = setOf(Dimension.Width, Dimension.Height)
 ): Modifier {
     return this.then(
@@ -65,7 +65,7 @@ public fun Modifier.visualizeDimension(
  */
 @Stable
 public fun Modifier.visualizeSize(
-    color: Color = Color.Red
+    color: Color = Defaults.color
 ): Modifier = visualizeDimension(color = color)
 
 private class DimensionElement(

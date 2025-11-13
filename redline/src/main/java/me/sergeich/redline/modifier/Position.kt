@@ -16,8 +16,8 @@ import androidx.compose.ui.node.ModifierNodeElement
 import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.sp
 import me.sergeich.redline.Axis
+import me.sergeich.redline.Defaults
 import me.sergeich.redline.Edge
 import me.sergeich.redline.SizeUnit
 import me.sergeich.redline.components.drawIBeamWithLabel
@@ -38,10 +38,10 @@ import me.sergeich.redline.format
  */
 @Stable
 public fun Modifier.visualizePosition(
-    color: Color = Color.Red,
-    textColor: Color = Color.White,
-    textSize: TextUnit = 14.sp,
-    sizeUnit: SizeUnit = SizeUnit.Dp,
+    color: Color = Defaults.color,
+    textColor: Color = Defaults.textColor,
+    textSize: TextUnit = Defaults.textSize,
+    sizeUnit: SizeUnit = Defaults.sizeUnit,
     edges: Set<Edge> = setOf(Edge.Top, Edge.Leading, Edge.Bottom, Edge.Trailing),
 ): Modifier {
     return this

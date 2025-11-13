@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
+import me.sergeich.redline.Defaults
 
 /**
  * Visualizes text baselines with horizontal lines.
@@ -28,7 +29,7 @@ import androidx.compose.ui.unit.dp
  */
 @Stable
 public fun Modifier.visualizeBaseline(
-    color: Color = Color.Red
+    color: Color = Defaults.color
 ): Modifier {
     return this
         .then(

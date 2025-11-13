@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import me.sergeich.redline.Axis
+import me.sergeich.redline.Defaults
 import me.sergeich.redline.SizeUnit
 import me.sergeich.redline.components.drawIBeamWithLabel
 import me.sergeich.redline.format
@@ -51,10 +52,10 @@ fun Modifier.measureSpacing(): Modifier {
  */
 @Stable
 fun Modifier.visualizeSpacing(
-    color: Color = Color.Red,
-    textColor: Color = Color.White,
-    textSize: TextUnit = 14.sp,
-    sizeUnit: SizeUnit = SizeUnit.Dp,
+    color: Color = Defaults.color,
+    textColor: Color = Defaults.textColor,
+    textSize: TextUnit = Defaults.textSize,
+    sizeUnit: SizeUnit = Defaults.sizeUnit,
     axis: Axis = Axis.Horizontal
 ): Modifier {
     return this
@@ -99,10 +100,10 @@ private class SpacingMarkNode : Modifier.Node(), TraversableNode, LayoutAwareMod
 }
 
 private class SpacingElement(
-    private val color: Color = Color.Red,
-    private val textColor: Color = Color.White,
-    private val textSize: TextUnit = 14.sp,
-    private val sizeUnit: SizeUnit = SizeUnit.Dp,
+    private val color: Color,
+    private val textColor: Color,
+    private val textSize: TextUnit,
+    private val sizeUnit: SizeUnit,
     private val axis: Axis
 ) : ModifierNodeElement<SpacingNode>() {
 
