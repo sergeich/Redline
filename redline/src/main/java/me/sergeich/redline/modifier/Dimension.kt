@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import me.sergeich.redline.Axis
 import me.sergeich.redline.Defaults
 import me.sergeich.redline.Dimension
+import me.sergeich.redline.RedlineConfig
 import me.sergeich.redline.SizeUnit
 import me.sergeich.redline.components.drawDimensionLabel
 import me.sergeich.redline.components.drawIBeamWithLabel
@@ -42,14 +43,29 @@ public fun Modifier.visualizeDimension(
     textColor: Color = Defaults.textColor,
     textSize: TextUnit = Defaults.textSize,
     sizeUnit: SizeUnit = Defaults.sizeUnit,
+    useInPreviewOnly: Boolean = Defaults.useInPreviewOnly,
     dimensions: Set<Dimension> = setOf(Dimension.Width, Dimension.Height)
 ): Modifier {
-    return this.then(
-        DimensionElement(
+    return visualizeDimension(
+        RedlineConfig(
             color = color,
             textColor = textColor,
             textSize = textSize,
             sizeUnit = sizeUnit,
+            useInPreviewOnly = useInPreviewOnly
+        ),
+        dimensions = dimensions
+    )
+}
+
+@Stable
+public fun Modifier.visualizeDimension(
+    config: RedlineConfig? = null,
+    dimensions: Set<Dimension> = setOf(Dimension.Width, Dimension.Height)
+): Modifier {
+    return this.then(
+        DimensionElement(
+            config = config,
             dimensions = dimensions
         )
     )
@@ -65,72 +81,56 @@ public fun Modifier.visualizeDimension(
  */
 @Stable
 public fun Modifier.visualizeSize(
-    color: Color = Defaults.color
-): Modifier = visualizeDimension(color = color)
+    color: Color = Defaults.color,
+    useInPreviewOnly: Boolean = Defaults.useInPreviewOnly
+): Modifier = visualizeSize(RedlineConfig(color = color, useInPreviewOnly = useInPreviewOnly))
+
+@Stable
+public fun Modifier.visualizeSize(
+    config: RedlineConfig? = null
+): Modifier = visualizeDimension(config)
 
 private class DimensionElement(
-    private val color: Color = Color.Unspecified,
-    private val textColor: Color,
-    private val textSize: TextUnit,
-    private val sizeUnit: SizeUnit,
+    private val config: RedlineConfig?,
     private val dimensions: Set<Dimension>
 ) : ModifierNodeElement<DimensionsNode>() {
 
     override fun create(): DimensionsNode {
         return DimensionsNode(
-            color,
-            textColor,
-            textSize,
-            sizeUnit,
+            config,
             dimensions
         )
     }
 
     override fun update(node: DimensionsNode) {
-        node.color = color
-        node.textColor = textColor
-        node.textSize = textSize
-        node.sizeUnit = sizeUnit
+        node.config = config
         node.dimensions = dimensions
     }
 
     override fun InspectorInfo.inspectableProperties() {
         debugInspectorInfo {
             name = "dimension"
-            properties["color"] = color
-            properties["textColor"] = textColor
-            properties["textSize"] = textSize
-            properties["sizeUnit"] = sizeUnit
             properties["dimensions"] = dimensions.joinToString { it.name }
         }
     }
 
     override fun hashCode(): Int {
-        var result = color.hashCode()
-        result = 31 * result + textColor.hashCode()
-        result = 31 * result + textSize.hashCode()
-        result = 31 * result + sizeUnit.hashCode()
+        var result = config.hashCode()
         result = 31 * result + dimensions.hashCode()
         return result
     }
 
     override fun equals(other: Any?): Boolean {
         val otherModifier = other as? DimensionElement ?: return false
-        return color == otherModifier.color &&
-                textColor == otherModifier.textColor &&
-                textSize == otherModifier.textSize &&
-                sizeUnit == otherModifier.sizeUnit &&
+        return config == otherModifier.config &&
                 dimensions == otherModifier.dimensions
     }
 }
 
 private class DimensionsNode(
-    var color: Color,
-    var textColor: Color,
-    var textSize: TextUnit,
-    var sizeUnit: SizeUnit,
+    config: RedlineConfig?,
     var dimensions: Set<Dimension>
-) : DrawModifierNode, Modifier.Node() {
+) : ConfigAwareNode(config), DrawModifierNode {
 
     private val strokeWidthDp = 1.dp
     private val textPaint = Paint().apply {
@@ -140,11 +140,15 @@ private class DimensionsNode(
     override fun ContentDrawScope.draw() {
         drawContent()
 
+        if (!shouldDraw()) {
+            return
+        }
+
         textPaint.color = textColor.toArgb()
         textPaint.textSize = textSize.toPx()
         when {
             dimensions.contains(Dimension.Width) && dimensions.contains(Dimension.Height) -> {
-                drawSize(textPaint)
+                drawSize(color, textPaint, sizeUnit)
             }
 
             dimensions.contains(Dimension.Width) -> {
@@ -173,7 +177,11 @@ private class DimensionsNode(
         }
     }
 
-    private fun ContentDrawScope.drawSize(textPaint: Paint) {
+    private fun ContentDrawScope.drawSize(
+        color: Color,
+        textPaint: Paint,
+        sizeUnit: SizeUnit
+    ) {
         drawRect(
             color = color,
             style = Stroke(width = strokeWidthDp.toPx())

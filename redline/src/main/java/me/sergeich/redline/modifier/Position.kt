@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.TextUnit
 import me.sergeich.redline.Axis
 import me.sergeich.redline.Defaults
 import me.sergeich.redline.Edge
+import me.sergeich.redline.RedlineConfig
 import me.sergeich.redline.SizeUnit
 import me.sergeich.redline.components.drawIBeamWithLabel
 import me.sergeich.redline.format
@@ -42,83 +43,73 @@ public fun Modifier.visualizePosition(
     textColor: Color = Defaults.textColor,
     textSize: TextUnit = Defaults.textSize,
     sizeUnit: SizeUnit = Defaults.sizeUnit,
+    useInPreviewOnly: Boolean = Defaults.useInPreviewOnly,
+    edges: Set<Edge> = setOf(Edge.Top, Edge.Leading, Edge.Bottom, Edge.Trailing),
+): Modifier {
+    return visualizePosition(
+        RedlineConfig(
+            color = color,
+            textColor = textColor,
+            textSize = textSize,
+            sizeUnit = sizeUnit,
+            useInPreviewOnly = useInPreviewOnly
+        ),
+        edges = edges
+    )
+}
+
+@Stable
+public fun Modifier.visualizePosition(
+    config: RedlineConfig? = null,
     edges: Set<Edge> = setOf(Edge.Top, Edge.Leading, Edge.Bottom, Edge.Trailing),
 ): Modifier {
     return this
         .then(
             PositionElement(
-                color = color,
-                textColor = textColor,
-                textSize = textSize,
-                sizeUnit = sizeUnit,
+                config = config,
                 edges = edges
             )
         )
 }
 
 private class PositionElement(
-    private val color: Color = Color.Unspecified,
-    private val textColor: Color,
-    private val textSize: TextUnit,
-    private val sizeUnit: SizeUnit,
+    private val config: RedlineConfig?,
     private val edges: Set<Edge>,
 ) : ModifierNodeElement<PositionNode>() {
 
     override fun create(): PositionNode {
-        return PositionNode(
-            color,
-            textColor,
-            textSize,
-            sizeUnit,
-            edges
-        )
+        return PositionNode(config, edges)
     }
 
     override fun update(node: PositionNode) {
-        node.color = color
-        node.textColor = textColor
-        node.textSize = textSize
-        node.sizeUnit = sizeUnit
+        node.config = config
         node.edges = edges
     }
 
     override fun InspectorInfo.inspectableProperties() {
         debugInspectorInfo {
             name = "position"
-            properties["color"] = color
-            properties["textColor"] = textColor
-            properties["textSize"] = textSize
-            properties["sizeUnit"] = sizeUnit
             properties["edges"] = edges.joinToString { it.name }
         }
     }
 
     override fun hashCode(): Int {
-        var result = color.hashCode()
-        result = 31 * result + textColor.hashCode()
-        result = 31 * result + textSize.hashCode()
-        result = 31 * result + sizeUnit.hashCode()
+        var result = config.hashCode()
         result = 31 * result + edges.hashCode()
         return result
     }
 
     override fun equals(other: Any?): Boolean {
         val otherModifier = other as? PositionElement ?: return false
-        return color == otherModifier.color &&
-                textColor == otherModifier.textColor &&
-                textSize == otherModifier.textSize &&
-                sizeUnit == otherModifier.sizeUnit &&
+        return config == otherModifier.config &&
                 edges == otherModifier.edges
     }
 }
 
 private class PositionNode(
-    var color: Color,
-    var textColor: Color,
-    var textSize: TextUnit,
-    var sizeUnit: SizeUnit,
+    config: RedlineConfig?,
     var edges: Set<Edge>
-) : DrawModifierNode, Modifier.Node(), LayoutAwareModifierNode {
+) : ConfigAwareNode(config), DrawModifierNode, LayoutAwareModifierNode {
 
     private val textPaint = Paint().apply {
         this.isAntiAlias = true
@@ -128,6 +119,10 @@ private class PositionNode(
 
     override fun ContentDrawScope.draw() {
         drawContent()
+
+        if (!shouldDraw()) {
+            return
+        }
 
         textPaint.color = textColor.toArgb()
         textPaint.textSize = textSize.toPx()

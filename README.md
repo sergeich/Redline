@@ -26,6 +26,34 @@ implementation 'me.sergeich:redline:0.0.2'
 
 The library provides modifiers that can be applied to any Composable to visualize layout measurements.
 
+### Global Configuration
+
+You can configure redline visualization globally using `RedlineConfig` and `LocalRedlineConfig`:
+
+```kotlin
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.sp
+import me.sergeich.redline.LocalRedlineConfig
+import me.sergeich.redline.RedlineConfig
+import me.sergeich.redline.SizeUnit
+
+CompositionLocalProvider(
+    LocalRedlineConfig provides RedlineConfig(
+        color = Color.Blue,
+        textColor = Color.White,
+        textSize = 12.sp,
+        sizeUnit = SizeUnit.Dp,
+        useInPreviewOnly = false // Set to true to only show redlines in preview mode
+    )
+) {
+    // Your composables here
+    // All redline modifiers will use the global config unless overridden
+}
+```
+
+The `useInPreviewOnly` flag is particularly useful for development - when set to `true`, redlines will only appear in Android Studio Preview, not in the running app.
+
 ### Position Visualization
 
 ```kotlin
@@ -119,6 +147,21 @@ Column(
 
 ## API Reference
 
+### Configuration
+
+#### `RedlineConfig`
+Data class for configuring redline visualization settings globally or per modifier.
+
+**Properties:**
+- `color: Color = Color.Red` - Color for visualization lines
+- `textColor: Color = Color.White` - Color for text labels
+- `textSize: TextUnit = 14.sp` - Size of text labels
+- `sizeUnit: SizeUnit = SizeUnit.Dp` - Unit system for measurements
+- `useInPreviewOnly: Boolean = false` - If true, redlines only appear in Compose Preview
+
+#### `LocalRedlineConfig`
+CompositionLocal that provides `RedlineConfig` throughout the composition tree. Modifiers will use this config unless a specific config is provided.
+
 ### Enums
 
 - `Edge`: Top, Leading, Trailing, Bottom
@@ -132,34 +175,50 @@ Column(
 #### `Modifier.visualizePosition()`
 Visualizes component position relative to its parent with measurement lines and labels.
 
-**Parameters:**
+**Overload 1 - Individual parameters:**
 - `color: Color = Color.Red` - Color for position lines
 - `textColor: Color = Color.White` - Color for text labels
 - `textSize: TextUnit = 14.sp` - Size of text labels
 - `sizeUnit: SizeUnit = SizeUnit.Dp` - Unit system for measurements
+- `useInPreviewOnly: Boolean = false` - If true, only show in preview mode
+- `edges: Set<Edge> = setOf(Edge.Top, Edge.Leading, Edge.Bottom, Edge.Trailing)` - Edges to visualize
+
+**Overload 2 - Config object:**
+- `config: RedlineConfig? = null` - Optional config object. If null, uses `LocalRedlineConfig`
 - `edges: Set<Edge> = setOf(Edge.Top, Edge.Leading, Edge.Bottom, Edge.Trailing)` - Edges to visualize
 
 #### `Modifier.visualizeDimension()`
 Visualizes component dimensions with measurement lines and labels.
 
-**Parameters:**
+**Overload 1 - Individual parameters:**
 - `color: Color = Color.Red` - Color for dimension lines
 - `textColor: Color = Color.White` - Color for text labels
 - `textSize: TextUnit = 14.sp` - Size of text labels
 - `sizeUnit: SizeUnit = SizeUnit.Dp` - Unit system for measurements
+- `useInPreviewOnly: Boolean = false` - If true, only show in preview mode
+- `dimensions: Set<Dimension> = setOf(Dimension.Width, Dimension.Height)` - Dimensions to visualize
+
+**Overload 2 - Config object:**
+- `config: RedlineConfig? = null` - Optional config object. If null, uses `LocalRedlineConfig`
 - `dimensions: Set<Dimension> = setOf(Dimension.Width, Dimension.Height)` - Dimensions to visualize
 
 #### `Modifier.visualizeSize()`
 Convenience function for visualizing both width and height dimensions.
 
-**Parameters:**
+**Overload 1 - Individual parameters:**
 - `color: Color = Color.Red` - Color for dimension lines
+
+**Overload 2 - Config object:**
+- `config: RedlineConfig? = null` - Optional config object. If null, uses `LocalRedlineConfig`
 
 #### `Modifier.visualizeBaseline()`
 Visualizes text baselines with horizontal lines.
 
-**Parameters:**
+**Overload 1 - Individual parameters:**
 - `color: Color = Color.Red` - Color for baseline lines
+
+**Overload 2 - Config object:**
+- `config: RedlineConfig? = null` - Optional config object. If null, uses `LocalRedlineConfig`
 
 #### `Modifier.measureSpacing()`
 Marks composables for spacing measurement. Use with `visualizeSpacing()`.
@@ -167,16 +226,21 @@ Marks composables for spacing measurement. Use with `visualizeSpacing()`.
 #### `Modifier.visualizeSpacing()`
 Visualizes spacing between marked composables.
 
-**Parameters:**
+**Overload 1 - Individual parameters:**
 - `color: Color = Color.Red` - Color for spacing lines
 - `textColor: Color = Color.White` - Color for text labels
 - `textSize: TextUnit = 14.sp` - Size of text labels
 - `sizeUnit: SizeUnit = SizeUnit.Dp` - Unit system for measurements
+- `useInPreviewOnly: Boolean = false` - If true, only show in preview mode
+- `axis: Axis = Axis.Horizontal` - Axis along which to measure spacing
+
+**Overload 2 - Config object:**
+- `config: RedlineConfig? = null` - Optional config object. If null, uses `LocalRedlineConfig`
 - `axis: Axis = Axis.Horizontal` - Axis along which to measure spacing
 
 ## Examples
 
-See the example app in `app/src/main/java/com/redline/android/example/MainActivity.kt` for comprehensive usage examples.
+See the example app in `app/src/main/java/org/example/redline/MainActivity.kt` for comprehensive usage examples.
 
 ## License
 

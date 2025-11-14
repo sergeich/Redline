@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import me.sergeich.redline.Defaults
+import me.sergeich.redline.RedlineConfig
 
 /**
  * Visualizes text baselines with horizontal lines.
@@ -29,57 +30,72 @@ import me.sergeich.redline.Defaults
  */
 @Stable
 public fun Modifier.visualizeBaseline(
-    color: Color = Defaults.color
+    color: Color = Defaults.color,
+    useInPreviewOnly: Boolean = Defaults.useInPreviewOnly
+): Modifier {
+    return visualizeBaseline(
+        RedlineConfig(
+            color = color,
+            useInPreviewOnly = useInPreviewOnly
+        )
+    )
+}
+
+public fun Modifier.visualizeBaseline(
+    config: RedlineConfig? = null
 ): Modifier {
     return this
         .then(
             BaselineElement(
-                color = color
+                config = config
             )
         )
 }
 
 private class BaselineElement(
-    private val color: Color = Color.Unspecified
+    private val config: RedlineConfig?
 ) : ModifierNodeElement<BaselineNode>() {
 
     override fun create(): BaselineNode {
-        return BaselineNode(color)
+        return BaselineNode(config)
     }
 
     override fun update(node: BaselineNode) {
-        node.color = color
+        node.config = config
     }
 
     override fun InspectorInfo.inspectableProperties() {
         debugInspectorInfo {
             name = "alignment"
-            properties["color"] = color
         }
     }
 
     override fun hashCode(): Int {
-        return color.hashCode()
+        return config.hashCode()
     }
 
     override fun equals(other: Any?): Boolean {
         val otherModifier = other as? BaselineElement ?: return false
-        return color == otherModifier.color
+        return config == otherModifier.config
     }
 }
 
 private class BaselineNode(
-    var color: Color,
-) : DrawModifierNode, Modifier.Node(), LayoutModifierNode {
+    config: RedlineConfig?
+) : ConfigAwareNode(config), DrawModifierNode, LayoutModifierNode {
 
     private var baselineFirst: Int = -1
     private var baselineLast: Int = -1
     private val linePadding = 10.dp
 
     override fun ContentDrawScope.draw() {
-        val linePaddingPx = linePadding.toPx()
         drawContent()
 
+        if (!shouldDraw()) {
+            return
+        }
+
+        val linePaddingPx = linePadding.toPx()
         if (baselineFirst >= 0) {
             drawLine(
                 color,

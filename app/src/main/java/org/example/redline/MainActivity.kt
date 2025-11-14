@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import me.sergeich.redline.Axis
@@ -99,7 +100,6 @@ fun RedlineExample(modifier: Modifier) {
                 .fillMaxWidth()
                 .height(80.dp)
                 .visualizeDimension(
-                    color = Color.Red,
                     dimensions = setOf(Dimension.Width)
                 ),
             shape = RoundedCornerShape(4.dp)
@@ -125,7 +125,6 @@ fun RedlineExample(modifier: Modifier) {
                 .fillMaxWidth()
                 .height(80.dp)
                 .visualizeDimension(
-                    color = Color.Red,
                     dimensions = setOf(Dimension.Height)
                 ),
             shape = RoundedCornerShape(4.dp)
@@ -200,7 +199,7 @@ fun RedlineExample(modifier: Modifier) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .visualizeSpacing(color = Color.Red, axis = Axis.Vertical),
+                .visualizeSpacing(axis = Axis.Vertical),
             verticalArrangement = Arrangement.spacedBy(32.dp)
         ) {
             repeat(3) { index ->
@@ -230,4 +229,10 @@ fun RedlineExample(modifier: Modifier) {
         // Add some spacing at the end
         Spacer(modifier = Modifier.height(50.dp))
     }
+}
+
+@Preview
+@Composable
+fun Preview() {
+    RedlineExample(Modifier)
 }
