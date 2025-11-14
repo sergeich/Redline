@@ -4,6 +4,8 @@ plugins {
     id("com.vanniktech.maven.publish") version "0.34.0"
 }
 
+val libraryVersion = "0.0.2"
+
 android {
     namespace = "me.sergeich.redline"
     compileSdk = 36
@@ -52,7 +54,7 @@ dependencies {
 
 mavenPublishing {
 
-    coordinates("me.sergeich", "redline", "0.0.2")
+    coordinates("me.sergeich", "redline", libraryVersion)
 
     pom {
         name.set("Redline")
