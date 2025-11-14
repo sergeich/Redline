@@ -19,7 +19,7 @@ Inspired by https://github.com/robb/Redline
 
 The library is published at the coordinates:
 ```
-implementation 'me.sergeich:redline:0.0.2'
+implementation 'me.sergeich:redline:0.1.0'
 ```
 
 ## Usage

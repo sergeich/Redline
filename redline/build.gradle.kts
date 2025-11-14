@@ -4,7 +4,7 @@ plugins {
     id("com.vanniktech.maven.publish") version "0.34.0"
 }
 
-val libraryVersion = "0.0.2"
+val libraryVersion = "0.1.0"
 
 android {
     namespace = "me.sergeich.redline"
