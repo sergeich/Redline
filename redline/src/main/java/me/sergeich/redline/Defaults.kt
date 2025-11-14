@@ -9,4 +9,5 @@ internal object Defaults {
     val textColor: Color = Color.White
     val textSize: TextUnit = 14.sp
     val sizeUnit: SizeUnit = SizeUnit.Dp
+    val useInPreviewOnly: Boolean = false
 }

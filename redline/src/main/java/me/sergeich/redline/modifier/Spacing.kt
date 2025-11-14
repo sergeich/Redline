@@ -18,9 +18,9 @@ import androidx.compose.ui.node.traverseChildren
 import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.sp
 import me.sergeich.redline.Axis
 import me.sergeich.redline.Defaults
+import me.sergeich.redline.RedlineConfig
 import me.sergeich.redline.SizeUnit
 import me.sergeich.redline.components.drawIBeamWithLabel
 import me.sergeich.redline.format
@@ -56,15 +56,30 @@ fun Modifier.visualizeSpacing(
     textColor: Color = Defaults.textColor,
     textSize: TextUnit = Defaults.textSize,
     sizeUnit: SizeUnit = Defaults.sizeUnit,
+    useInPreviewOnly: Boolean = Defaults.useInPreviewOnly,
+    axis: Axis = Axis.Horizontal
+): Modifier {
+    return visualizeSpacing(
+        RedlineConfig(
+            color = color,
+            textColor = textColor,
+            textSize = textSize,
+            sizeUnit = sizeUnit,
+            useInPreviewOnly = useInPreviewOnly
+        ),
+        axis = axis
+    )
+}
+
+@Stable
+fun Modifier.visualizeSpacing(
+    config: RedlineConfig? = null,
     axis: Axis = Axis.Horizontal
 ): Modifier {
     return this
         .then(
             SpacingElement(
-                color = color,
-                textColor = textColor,
-                textSize = textSize,
-                sizeUnit = sizeUnit,
+                config = config,
                 axis = axis
             )
         )
@@ -100,57 +115,35 @@ private class SpacingMarkNode : Modifier.Node(), TraversableNode, LayoutAwareMod
 }
 
 private class SpacingElement(
-    private val color: Color,
-    private val textColor: Color,
-    private val textSize: TextUnit,
-    private val sizeUnit: SizeUnit,
+    private val config: RedlineConfig?,
     private val axis: Axis
 ) : ModifierNodeElement<SpacingNode>() {
 
     override fun create(): SpacingNode {
-        return SpacingNode(
-            color,
-            textColor,
-            textSize,
-            sizeUnit = sizeUnit,
-            axis
-        )
+        return SpacingNode(config, axis)
     }
 
     override fun update(node: SpacingNode) {
-        node.color = color
-        node.textColor = textColor
-        node.textSize = textSize
-        node.sizeUnit = sizeUnit
+        node.config = config
         node.axis = axis
     }
 
     override fun InspectorInfo.inspectableProperties() {
         debugInspectorInfo {
             name = "spacing"
-            properties["color"] = color
-            properties["textColor"] = textColor
-            properties["textSize"] = textSize
-            properties["sizeUnit"] = sizeUnit
             properties["axis"] = axis.toString()
         }
     }
 
     override fun hashCode(): Int {
-        var result = color.hashCode()
-        result = 31 * result + textColor.hashCode()
-        result = 31 * result + textSize.hashCode()
-        result = 31 * result + sizeUnit.hashCode()
+        var result = config.hashCode()
         result = 31 * result + axis.hashCode()
         return result
     }
 
     override fun equals(other: Any?): Boolean {
         val otherModifier = other as? SpacingElement ?: return false
-        return color == otherModifier.color &&
-                textColor == otherModifier.textColor &&
-                textSize == otherModifier.textSize &&
-                sizeUnit == otherModifier.sizeUnit &&
+        return config == otherModifier.config &&
                 axis == otherModifier.axis
     }
 }
@@ -179,12 +172,9 @@ private data class Spacing(
 }
 
 private class SpacingNode(
-    var color: Color,
-    var textColor: Color,
-    var textSize: TextUnit,
-    var sizeUnit: SizeUnit,
+    config: RedlineConfig?,
     var axis: Axis
-) : Modifier.Node(), DrawModifierNode {
+) : ConfigAwareNode(config), DrawModifierNode {
 
     private val textPaint = Paint().apply {
         isAntiAlias = true
@@ -192,6 +182,10 @@ private class SpacingNode(
 
     override fun ContentDrawScope.draw() {
         drawContent()
+
+        if (!shouldDraw()) {
+            return
+        }
 
         textPaint.color = textColor.toArgb()
         textPaint.textSize = textSize.toPx()

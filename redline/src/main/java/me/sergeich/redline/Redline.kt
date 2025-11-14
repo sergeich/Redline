@@ -51,6 +51,7 @@ public enum class LineStyle {
 public enum class SizeUnit {
     /** Density-independent pixels (dp) */
     Dp,
+
     /** Physical pixels (px) */
     Px
 }
@@ -63,15 +64,10 @@ internal data class UnitPoint(
     val y: Float
 ) {
     companion object {
-        val TopLeading = UnitPoint(0f, 0f)
         val Top = UnitPoint(0.5f, 0f)
-        val TopTrailing = UnitPoint(1f, 0f)
         val Leading = UnitPoint(0f, 0.5f)
-        val Center = UnitPoint(0.5f, 0.5f)
         val Trailing = UnitPoint(1f, 0.5f)
-        val BottomLeading = UnitPoint(0f, 1f)
         val Bottom = UnitPoint(0.5f, 1f)
-        val BottomTrailing = UnitPoint(1f, 1f)
     }
 }
 
