@@ -4,6 +4,7 @@ composeBom = "2025.10.00"
 coreKtx = "1.17.0"
 gradle = "8.13.0"
 kotlin = "1.9.20"
+publish-plugin = "0.34.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -21,4 +22,5 @@ kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-p
 android-application = { id = "com.android.application" }
 android-library = { id = "com.android.library" }
 kotlin-android = { id = "org.jetbrains.kotlin.android" }
+publish = { id = "com.vanniktech.maven.publish", version.ref = "publish-plugin"}
 
